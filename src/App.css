@@ -6,28 +6,119 @@
 }
 
 body {
-  background-color: #f0f2f5;
-  color: #333;
+  background-color: #0f1a14;
+  color: #e0e0e0;
+  display: flex;
+  height: 100vh;
 }
 
-.container {
-  max-width: 900px;
-  margin: 40px auto;
-  padding: 0 20px;
+.app {
+  display: flex;
+  width: 100%;
+  height: 100vh;
 }
 
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  color: #1a1a2e;
-  margin-bottom: 30px;
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  background-color: #132218;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  border-right: 1px solid #1e3a28;
 }
 
+.sidebar-logo {
+  padding: 0 24px 32px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #4ade80;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #1e3a28;
+  margin-bottom: 16px;
+}
+
+.sidebar-logo span {
+  font-size: 0.75rem;
+  display: block;
+  color: #6b7280;
+  font-weight: 400;
+  letter-spacing: 0;
+  margin-top: 2px;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-menu li {
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #9ca3af;
+  transition: all 0.2s;
+}
+
+.sidebar-menu li:hover {
+  background-color: #1e3a28;
+  color: #e0e0e0;
+}
+
+.sidebar-menu li.active {
+  background-color: #166534;
+  color: #4ade80;
+  font-weight: 600;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.topbar {
+  background-color: #132218;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #1e3a28;
+}
+
+.topbar h2 {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  font-weight: 600;
+}
+
+.topbar-info {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
+
+/* FORMULARIO */
 .formulario {
-  background: white;
+  background: #132218;
   padding: 24px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border: 1px solid #1e3a28;
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
@@ -38,57 +129,92 @@ h1 {
   flex: 1;
   min-width: 150px;
   padding: 10px 14px;
-  border: 1px solid #ddd;
+  background: #0f1a14;
+  border: 1px solid #1e3a28;
   border-radius: 8px;
   font-size: 14px;
+  color: #e0e0e0;
   outline: none;
   transition: border-color 0.2s;
 }
 
+.formulario input::placeholder {
+  color: #4b5563;
+}
+
 .formulario input:focus {
-  border-color: #4f46e5;
+  border-color: #4ade80;
 }
 
 .formulario button {
   padding: 10px 24px;
-  background-color: #4f46e5;
-  color: white;
-  border: none;
+  background-color: #166534;
+  color: #4ade80;
+  border: 1px solid #4ade80;
   border-radius: 8px;
   font-size: 14px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 600;
+  transition: all 0.2s;
 }
 
 .formulario button:hover {
-  background-color: #4338ca;
+  background-color: #4ade80;
+  color: #0f1a14;
+}
+
+/* TABELA */
+.tabela-container {
+  background: #132218;
+  border-radius: 12px;
+  border: 1px solid #1e3a28;
+  overflow: hidden;
+}
+
+.tabela-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #1e3a28;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabela-header h3 {
+  font-size: 15px;
+  color: #e0e0e0;
+}
+
+.total-badge {
+  background: #1e3a28;
+  color: #4ade80;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
 }
 
 table {
   width: 100%;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   border-collapse: collapse;
-  overflow: hidden;
 }
 
 thead {
-  background-color: #1a1a2e;
-  color: white;
+  background-color: #0f1a14;
 }
 
 th {
-  padding: 14px 20px;
+  padding: 14px 24px;
   text-align: left;
-  font-weight: 500;
-  font-size: 14px;
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 td {
-  padding: 14px 20px;
+  padding: 16px 24px;
   font-size: 14px;
-  border-bottom: 1px solid #f0f2f5;
+  border-bottom: 1px solid #1a2e20;
+  color: #d1d5db;
 }
 
 tr:last-child td {
@@ -96,20 +222,104 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background-color: #f8f9ff;
+  background-color: #1a2e20;
 }
 
 .btn-remover {
   padding: 6px 16px;
-  background-color: #ef4444;
-  color: white;
-  border: none;
+  background-color: transparent;
+  color: #f87171;
+  border: 1px solid #f87171;
   border-radius: 6px;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s;
 }
 
 .btn-remover:hover {
-  background-color: #dc2626;
+  background-color: #f87171;
+  color: #0f1a14;
+}
+
+.cards {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.card {
+    flex: 1;
+    background: #132218;
+    border: 1px solid #1e3a28;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.card-icon {
+    font-size: 2rem;
+    background: #1e3a28;
+    padding: 12px;
+    border-radius: 10px;
+}
+
+.card-label {
+    font-size: 12px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.card-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #4ade80;
+}
+
+.busca-input {
+    padding: 8px 16px;
+    background: #0f1a14;
+    border: 1px solid #1e3a28;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #e0e0e0;
+    outline: none;
+    width: 220px;
+    transition: border-color 0.2s;
+}
+
+.busca-input:focus {
+    border-color: #4ade80;
+}
+
+.mensagem {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.mensagem-sucesso {
+    background-color: #166534;
+    color: #4ade80;
+    border: 1px solid #4ade80;
+}
+
+.mensagem-erro {
+    background-color: #7f1d1d;
+    color: #f87171;
+    border: 1px solid #f87171;
+}
+
+.estoque-baixo td {
+    background-color: #2d1a1a;
+    color: #f87171;
+}
+
+.estoque-baixo td:first-child::before {
+    content: '⚠️ ';
 }

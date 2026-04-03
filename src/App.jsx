@@ -5,6 +5,28 @@ function App() {
     const [nome, setNome] = useState('');
     const [quantidade, setQuantidade] = useState('');
     const [preco, setPreco] = useState('');
+    const [busca, setBusca] = useState('');
+    const [mensagem, setMensagem] = useState(null);
+
+    const totalProdutos = produtos.length;
+
+    const valorTotalEstoque = produtos.reduce((total, produto) => {
+        return total + (produto.preco * produto.quantidade);
+    }, 0);
+
+    const produtoMaisCaro = produtos.length > 0
+    ? produtos.reduce((maior, produto) =>
+        produto.preco > maior.preco ? produto : maior)
+    : null;
+
+    const produtosFiltrados = produtos.filter(produto =>
+        produto.nome.toLowerCase().includes(busca.toLowerCase())
+    );
+
+    function mostrarMensagem(texto, tipo) {
+        setMensagem({ texto, tipo });
+        setTimeout(() => setMensagem(null), 3000);
+    }
 
     useEffect(() => {
     fetch('http://localhost:8080/produtos')
@@ -13,23 +35,60 @@ function App() {
     }, []);
 
     function adicionarProduto() {
-    fetch('http://localhost:8080/produtos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            nome: nome,
-            quantidade: parseInt(quantidade),
-            preco: parseFloat(preco)
+        const produtoExistente = produtos.find(
+            p => p.nome.toLowerCase() === nome.toLowerCase()
+        );
+
+        if (!nome || !quantidade) {
+            mostrarMensagem('Preencha nome e quantidade!', 'erro');
+            return;
+        }
+        if (!produtoExistente && !preco) {
+            mostrarMensagem('Preencha o preço para novo produto!', 'erro');
+            return;
+        }
+        if (isNaN(parseFloat(preco || '0')) || isNaN(parseInt(quantidade))) {
+            mostrarMensagem('Preço e quantidade devem ser números!', 'erro');
+            return;
+    }
+
+
+    if (produtoExistente) {
+        fetch(`http://localhost:8080/produtos/${produtoExistente.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quantidade: parseInt(quantidade) })
         })
-    })
-    .then(response => response.json())
-    .then(novoProduto => {
-        setProdutos([...produtos, novoProduto]); 
-        setNome('');    
-        setQuantidade('');
-        setPreco('');
-    });
-}   
+        .then(response => response.json())
+        .then(produtoAtualizado => {
+            setProdutos(produtos.map(p =>
+                p.id === produtoAtualizado.id ? produtoAtualizado : p
+            ));
+            setNome('');
+            setQuantidade('');
+            setPreco('');
+            mostrarMensagem(`+${quantidade} unidades adicionadas ao ${nome}!`, 'sucesso');
+        });
+    } else {
+        fetch('http://localhost:8080/produtos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                nome: nome,
+                quantidade: parseInt(quantidade),
+                preco: parseFloat(preco)
+            })
+        })
+        .then(response => response.json())
+        .then(novoProduto => {
+            setProdutos([...produtos, novoProduto]);
+            setNome('');
+            setQuantidade('');
+            setPreco('');
+            mostrarMensagem('Produto adicionado com sucesso!', 'sucesso');
+        });
+    }
+} 
 
     function removerProduto(id) {
     fetch(`http://localhost:8080/produtos/${id}`, {
@@ -37,52 +96,120 @@ function App() {
     })
     .then(() => {
         setProdutos(produtos.filter(p => p.id !== id));
+        mostrarMensagem('Produto removido!', 'erro');
     });
 }
 
+   return (
+    <div className="app">
+        <aside className="sidebar">
+            <div className="sidebar-logo">
+                📦 StockSystem
+                <span>Gerenciamento de Estoque</span>
+            </div>
+            <ul className="sidebar-menu">
+                <li className="active">📦 Produtos</li>
+                <li>📊 Dashboard</li>
+                <li>📈 Relatórios</li>
+                <li>⚙️ Configurações</li>
+            </ul>
+        </aside>
 
+        <div className="main">
+            <div className="topbar">
+                <h2>Produtos</h2>
+                <span className="topbar-info">
+                    {produtos.length} produto{produtos.length !== 1 ? 's' : ''} cadastrado{produtos.length !== 1 ? 's' : ''}
+                </span>
+            <input
+                type="text"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+                placeholder="🔍 Buscar produto..."
+                className="busca-input"
+            />
+            </div>
 
-    return (
-      <div className="container">
-          <h1>Sistema de Estoque</h1>
-          <div className="formulario">
-              <input type="text" value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                  placeholder="Nome do produto" />
-              <input type="text" value={preco}
-                  onChange={(e) => setPreco(e.target.value)}
-                  placeholder="Preço" />
-              <input type="text" value={quantidade}
-                  onChange={(e) => setQuantidade(e.target.value)}
-                  placeholder="Quantidade" />
-              <button onClick={adicionarProduto}>Adicionar</button>
-          </div>
-          <table>
-              <thead>
-                  <tr>
-                      <th>Nome</th>
-                      <th>Quantidade</th>
-                      <th>Preço</th>
-                      <th>Ação</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {produtos.map(produto => (
-                      <tr key={produto.id}>
-                          <td>{produto.nome}</td>
-                          <td>{produto.quantidade}</td>
-                          <td>R$ {produto.preco.toFixed(2)}</td>
-                          <td>
-                              <button className="btn-remover"
-                                  onClick={() => removerProduto(produto.id)}>
-                                  Remover
-                              </button>
-                          </td>
-                      </tr>
-                  ))}
-              </tbody>
-          </table>
-      </div>
+        <div className="cards">
+             <div className="card">
+                <span className="card-icon">📦</span>
+                <div>
+                    <p className="card-label">Total de Produtos</p>
+                    <p className="card-value">{totalProdutos}</p>
+                </div>
+            </div>
+            <div className="card">
+                <span className="card-icon">💰</span>
+                <div>
+                    <p className="card-label">Valor em Estoque</p>
+                    <p className="card-value">R$ {valorTotalEstoque.toFixed(2)}</p>
+                </div>
+            </div>
+            <div className="card">
+                <span className="card-icon">⭐</span>
+                <div>
+                    <p className="card-label">Produto Mais Caro</p>
+                    <p className="card-value">
+                        {produtoMaisCaro ? produtoMaisCaro.nome : '—'}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+            <div className="content">
+                <div className="formulario">
+                    <input type="text" value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                        placeholder="Nome do produto" />
+                    <input type="text" value={preco}
+                        onChange={(e) => setPreco(e.target.value)}
+                        placeholder="Preço" />
+                    <input type="text" value={quantidade}
+                        onChange={(e) => setQuantidade(e.target.value)}
+                        placeholder="Quantidade" />
+                    <button onClick={adicionarProduto}>+ Adicionar</button>
+                </div>
+
+                {mensagem && (
+                <div className={`mensagem mensagem-${mensagem.tipo}`}>
+                    {mensagem.texto}
+                </div>
+                )}
+
+                <div className="tabela-container">
+                    <div className="tabela-header">
+                        <h3>Lista de Produtos</h3>
+                        <span className="total-badge">{produtos.length} itens</span>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Quantidade</th>
+                                <th>Preço</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {produtosFiltrados.map(produto => (
+                                <tr key={produto.id} className={produto.quantidade < 5 ? 'estoque-baixo' : ''}>
+                                    <td>{produto.nome}</td>
+                                    <td>{produto.quantidade}</td>
+                                    <td>R$ {produto.preco.toFixed(2)}</td>
+                                    <td>
+                                        <button className="btn-remover"
+                                            onClick={() => removerProduto(produto.id)}>
+                                            Remover
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     );
 }
 
