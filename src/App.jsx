@@ -7,6 +7,9 @@ function App() {
     const [preco, setPreco] = useState('');
     const [busca, setBusca] = useState('');
     const [mensagem, setMensagem] = useState(null);
+    const [editandoId, setEditandoId] = useState(null);
+    const [editNome, setEditNome] = useState('');
+    const [editPreco, setEditPreco] = useState('');
 
     const totalProdutos = produtos.length;
 
@@ -97,6 +100,32 @@ function App() {
     .then(() => {
         setProdutos(produtos.filter(p => p.id !== id));
         mostrarMensagem('Produto removido!', 'erro');
+    });
+}
+
+    function iniciarEdicao(produto) {
+    setEditandoId(produto.id);
+    setEditNome(produto.nome);
+    setEditPreco(produto.preco);
+}
+
+    function salvarEdicao(id) {
+    fetch(`http://localhost:8080/produtos/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            nome: editNome,
+            quantidade: 0,
+            preco: parseFloat(editPreco)
+        })
+    })
+    .then(response => response.json())
+    .then(produtoAtualizado => {
+        setProdutos(produtos.map(p =>
+            p.id === produtoAtualizado.id ? produtoAtualizado : p
+        ));
+        setEditandoId(null);
+        mostrarMensagem('Produto atualizado!', 'sucesso');
     });
 }
 
@@ -192,18 +221,47 @@ function App() {
                         </thead>
                         <tbody>
                             {produtosFiltrados.map(produto => (
-                                <tr key={produto.id} className={produto.quantidade < 5 ? 'estoque-baixo' : ''}>
-                                    <td>{produto.nome}</td>
-                                    <td>{produto.quantidade}</td>
-                                    <td>R$ {produto.preco.toFixed(2)}</td>
-                                    <td>
-                                        <button className="btn-remover"
-                                            onClick={() => removerProduto(produto.id)}>
-                                            Remover
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                                    <tr key={produto.id} className={produto.quantidade < 5 ? 'estoque-baixo' : ''}>
+                                        <td>
+                                            {editandoId === produto.id
+                                                ? <input className="input-edit" value={editNome}
+                                                    onChange={(e) => setEditNome(e.target.value)} />
+                                                : produto.nome}
+                                        </td>
+                                        <td>{produto.quantidade}</td>
+                                        <td>
+                                            {editandoId === produto.id
+                                                ? <input className="input-edit" value={editPreco}
+                                                    onChange={(e) => setEditPreco(e.target.value)} />
+                                                : `R$ ${produto.preco.toFixed(2)}`}
+                                        </td>
+                                        <td>
+                                            {editandoId === produto.id ? (
+                                                <>
+                                                    <button className="btn-salvar"
+                                                        onClick={() => salvarEdicao(produto.id)}>
+                                                        Salvar
+                                                    </button>
+                                                    <button className="btn-cancelar"
+                                                        onClick={() => setEditandoId(null)}>
+                                                        Cancelar
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <button className="btn-editar"
+                                                        onClick={() => iniciarEdicao(produto)}>
+                                                        Editar
+                                                    </button>
+                                                    <button className="btn-remover"
+                                                        onClick={() => removerProduto(produto.id)}>
+                                                        Remover
+                                                    </button>
+                                                </>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>
