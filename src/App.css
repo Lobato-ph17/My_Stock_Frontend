@@ -384,3 +384,24 @@ tr:hover td {
     background: #6b7280;
     color: #0f1a14;
 }
+
+.graficos {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.grafico-container {
+    flex: 1;
+    min-width: 300px;
+    background: #132218;
+    border: 1px solid #1e3a28;
+    border-radius: 12px;
+    padding: 24px;
+}
+
+.grafico-container h3 {
+    color: #e0e0e0;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
