@@ -405,3 +405,20 @@ tr:hover td {
     font-size: 15px;
     margin-bottom: 20px;
 }
+
+
+.btn-exportar {
+    padding: 8px 16px;
+    background: transparent;
+    color: #4ade80;
+    border: 1px solid #4ade80;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-exportar:hover {
+    background: #4ade80;
+    color: #0f1a14;
+}

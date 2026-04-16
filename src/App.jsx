@@ -129,6 +129,24 @@ function App() {
             mostrarMensagem('Produto atualizado!', 'sucesso');
         });
     }
+
+    function exportarCSV() {
+    const cabecalho = "Nome,Quantidade,Preço\n";
+    const linhas = produtos.map(p =>
+        `${p.nome},${p.quantidade},${p.preco.toFixed(2)}`
+    ).join("\n");
+
+    const csv = cabecalho + linhas;
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'estoque.csv';
+    link.click();
+
+    URL.revokeObjectURL(url);
+}
  
     return (
         <div className="app">
@@ -163,6 +181,12 @@ function App() {
                             placeholder="🔍 Buscar produto..."
                             className="busca-input" />
                     )}
+                     {pagina === 'produtos' && (
+                        <button className="btn-exportar" onClick={exportarCSV}>
+                            ⬇ Exportar CSV
+                        </button>
+                        )}
+
                 </div>
  
                 <div className="cards">
@@ -324,6 +348,7 @@ function App() {
                             </div>
                         </div>
                     </div>
+                       
                     )}
                </div>
         </div>
