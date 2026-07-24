@@ -5,6 +5,7 @@ import Ingredientes from './pages/Ingredientes'
 import Produtos from './pages/Produtos'
 import Receitas from './pages/Receitas'
 import Producao from './pages/Producao'
+import Vendas from './pages/Vendas'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="produtos" element={<Produtos />} />
         <Route path="receitas" element={<Receitas />} />
         <Route path="producao" element={<Producao />} />
+        <Route path="vendas" element={<Vendas />} />
       </Route>
     </Routes>
   )
