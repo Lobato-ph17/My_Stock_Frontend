@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import Ingredientes from './pages/Ingredientes'
 import Produtos from './pages/Produtos'
 import Receitas from './pages/Receitas'
+import Producao from './pages/Producao'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="ingredientes" element={<Ingredientes />} />
         <Route path="produtos" element={<Produtos />} />
         <Route path="receitas" element={<Receitas />} />
+        <Route path="producao" element={<Producao />} />
       </Route>
     </Routes>
   )
