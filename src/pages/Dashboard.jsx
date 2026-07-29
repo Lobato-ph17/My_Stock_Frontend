@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getDashboard } from '../services/dashboardService'
 import { DollarSign, Package, AlertTriangle } from 'lucide-react'
 import './Dashboard.css'
@@ -9,6 +10,7 @@ export default function Dashboard() {
   const [dados, setDados]     = useState(null)
   const [loading, setLoading] = useState(true)
   const [erro, setErro]       = useState(null)
+  const navigate              = useNavigate()
 
   useEffect(() => {
     getDashboard()
@@ -25,7 +27,6 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
 
-      {/* Ilustração de fundo */}
       <svg className="dashboard-bg" viewBox="0 0 300 300" fill="none">
         <circle cx="80" cy="80" r="50" stroke="#2C1A0E" strokeWidth="2"/>
         <circle cx="80" cy="80" r="35" stroke="#2C1A0E" strokeWidth="1.5"/>
@@ -74,6 +75,11 @@ export default function Dashboard() {
           <div className="hero-stat-val">{dados.totalLotes}</div>
           <div className="hero-stat-label">Lotes</div>
         </div>
+        <div className="hero-divider" />
+        <div className="hero-stat">
+          <div className="hero-stat-val">{dados.totalDocesEmEstoque}</div>
+          <div className="hero-stat-label">Em estoque</div>
+        </div>
       </div>
 
       {/* Cards secundários */}
@@ -91,8 +97,10 @@ export default function Dashboard() {
           <div className="card-icone card-icone--verde">
             <Package size={17} />
           </div>
-          <div className="card-valor">—</div>
-          <div className="card-label">Doces em estoque</div>
+          <div className="card-valor">
+            R$ {dados.totalDespesas.toFixed(2).replace('.', ',')}
+          </div>
+          <div className="card-label">Total de despesas</div>
         </div>
         <div className="card">
           <div className="card-icone card-icone--verm">
@@ -105,6 +113,8 @@ export default function Dashboard() {
 
       {/* Painel inferior */}
       <div className="dashboard-bottom">
+
+        {/* Mais vendidos */}
         <div className="dash-panel">
           <h2 className="dash-panel-titulo">Mais vendidos</h2>
           {dados.rankingProdutos?.length === 0 ? (
@@ -114,12 +124,16 @@ export default function Dashboard() {
               <div key={p.produtoId} className="ranking-item">
                 <div className="ranking-pos">{i + 1}</div>
                 <span className="ranking-nome">{p.nome}</span>
-                <span className="ranking-qtd">{p.totalVendido} vendidos</span>
+                <span className="ranking-faturamento">
+                  R$ {Number(p.faturamento).toFixed(2).replace('.', ',')}
+                </span>
+                <span className="ranking-qtd">{p.totalVendido} un</span>
               </div>
             ))
           )}
         </div>
 
+        {/* Alertas */}
         <div className="dash-panel">
           <h2 className="dash-panel-titulo">Alertas de estoque</h2>
           {alertas === 0 ? (
@@ -128,14 +142,25 @@ export default function Dashboard() {
             </div>
           ) : (
             <>
-              {dados.ingredientesAbaixoDoMinimo > 0 && (
-                <div className="alerta-item alerta-item--warn">
-                  {dados.ingredientesAbaixoDoMinimo} ingrediente(s) abaixo do mínimo
+              {dados.nomesIngredientesAlerta?.map(nome => (
+                <div
+                  key={nome}
+                  className="alerta-item alerta-item--warn alerta-item--clicavel"
+                  onClick={() => navigate('/ingredientes')}
+                >
+                  <AlertTriangle size={14} />
+                  <span><strong>{nome}</strong> abaixo do mínimo</span>
+                  <span className="alerta-arrow">→</span>
                 </div>
-              )}
+              ))}
               {dados.produtosSemEstoque > 0 && (
-                <div className="alerta-item alerta-item--verm">
-                  {dados.produtosSemEstoque} produto(s) sem estoque
+                <div
+                  className="alerta-item alerta-item--verm alerta-item--clicavel"
+                  onClick={() => navigate('/produtos')}
+                >
+                  <Package size={14} />
+                  <span><strong>{dados.produtosSemEstoque} produto(s)</strong> sem estoque</span>
+                  <span className="alerta-arrow">→</span>
                 </div>
               )}
             </>
