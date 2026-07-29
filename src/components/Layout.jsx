@@ -1,23 +1,18 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import {
-  LayoutDashboard,
-  Package,
-  ShoppingBasket,
-  ClipboardList,
-  Factory,
-  ShoppingCart,
-  Receipt
+  LayoutDashboard, ShoppingBasket, Package,
+  ClipboardList, Factory, ShoppingCart, Receipt
 } from 'lucide-react'
 import './Layout.css'
 
 const menuItems = [
-  { path: '/',           icon: LayoutDashboard, label: 'Dashboard'  },
-  { path: '/ingredientes', icon: ShoppingBasket,  label: 'Ingredientes' },
-  { path: '/produtos',   icon: Package,          label: 'Produtos'   },
-  { path: '/receitas',   icon: ClipboardList,    label: 'Receitas'   },
-  { path: '/producao',   icon: Factory,          label: 'Produção'   },
-  { path: '/vendas',     icon: ShoppingCart,     label: 'Vendas'     },
-  { path: '/despesas',   icon: Receipt,          label: 'Despesas'   },
+  { path: '/',              icon: LayoutDashboard, label: 'Dashboard'   },
+  { path: '/ingredientes',  icon: ShoppingBasket,  label: 'Ingredientes' },
+  { path: '/produtos',      icon: Package,         label: 'Produtos'    },
+  { path: '/receitas',      icon: ClipboardList,   label: 'Receitas'    },
+  { path: '/producao',      icon: Factory,         label: 'Produção'    },
+  { path: '/vendas',        icon: ShoppingCart,    label: 'Vendas'      },
+  { path: '/despesas',      icon: Receipt,         label: 'Despesas'    },
 ]
 
 export default function Layout() {
@@ -25,7 +20,7 @@ export default function Layout() {
     <div className="layout">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          🍬 PLStock
+          PL<span>Stock</span>
         </div>
         <nav className="sidebar-nav">
           {menuItems.map(({ path, icon: Icon, label }) => (
@@ -37,7 +32,7 @@ export default function Layout() {
                 'nav-item' + (isActive ? ' nav-item--active' : '')
               }
             >
-              <Icon size={18} />
+              <Icon size={17} />
               <span>{label}</span>
             </NavLink>
           ))}

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -5,9 +7,9 @@
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f8f9fa;
-  color: #212529;
+  font-family: 'Inter', sans-serif;
+  background: #F5EFE4;
+  color: #2C1A0E;
 }
 
 .layout {
@@ -17,8 +19,7 @@ body {
 
 .sidebar {
   width: 220px;
-  background: #1a1a2e;
-  color: white;
+  background: #2C1A0E;
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -26,16 +27,20 @@ body {
 }
 
 .sidebar-logo {
-  padding: 24px 20px;
-  font-size: 1.3rem;
-  font-weight: 700;
-  border-bottom: 1px solid #ffffff20;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  color: #F5EFE4;
+  padding: 28px 24px;
+  border-bottom: 1px solid #3D2A1A;
+  letter-spacing: 0.02em;
 }
+
+.sidebar-logo span { color: #C8854A; }
 
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  padding: 12px 0;
+  padding: 16px 0;
   gap: 2px;
 }
 
@@ -43,27 +48,29 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 20px;
-  color: #ffffffaa;
+  padding: 11px 24px;
+  color: #A0856E;
   text-decoration: none;
-  border-radius: 6px;
-  margin: 0 8px;
-  transition: all 0.2s;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
 }
 
 .nav-item:hover {
-  background: #ffffff15;
-  color: white;
+  color: #F5EFE4;
+  background: #3D2A1A;
 }
 
 .nav-item--active {
-  background: #e94560;
-  color: white;
+  color: #F5EFE4;
+  background: #3D2A1A;
+  border-left-color: #C8854A;
 }
 
 .content {
   margin-left: 220px;
-  padding: 32px;
+  padding: 36px 40px;
   flex: 1;
+  min-height: 100vh;
+  width: calc(100vw - 220px);
 }

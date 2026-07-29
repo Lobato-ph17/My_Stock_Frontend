@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react'
 import { getDashboard } from '../services/dashboardService'
-import {
-  TrendingUp, DollarSign, ShoppingCart,
-  AlertTriangle, Package, Factory
-} from 'lucide-react'
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, CartesianGrid
-} from 'recharts'
+import { DollarSign, Package, AlertTriangle } from 'lucide-react'
 import './Dashboard.css'
 
+const mes = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date())
+
 export default function Dashboard() {
-  const [dados, setDados] = useState(null)
+  const [dados, setDados]     = useState(null)
   const [loading, setLoading] = useState(true)
-  const [erro, setErro] = useState(null)
+  const [erro, setErro]       = useState(null)
 
   useEffect(() => {
     getDashboard()
@@ -25,78 +20,128 @@ export default function Dashboard() {
   if (loading) return <div className="dashboard-loading">Carregando...</div>
   if (erro)    return <div className="dashboard-erro">{erro}</div>
 
-  const cards = [
-    {
-      label: 'Faturamento Bruto',
-      value: `R$ ${dados.faturamentoBruto.toFixed(2)}`,
-      icon: DollarSign,
-      cor: '#4CAF50'
-    },
-    {
-      label: 'Lucro Líquido',
-      value: `R$ ${dados.lucroLiquido.toFixed(2)}`,
-      icon: TrendingUp,
-      cor: '#2196F3'
-    },
-    {
-      label: 'Total de Vendas',
-      value: dados.totalVendas,
-      icon: ShoppingCart,
-      cor: '#9C27B0'
-    },
-    {
-      label: 'Lotes Produzidos',
-      value: dados.totalLotes,
-      icon: Factory,
-      cor: '#FF9800'
-    },
-    {
-      label: 'Ingredientes em Alerta',
-      value: dados.ingredientesAbaixoDoMinimo,
-      icon: AlertTriangle,
-      cor: '#f44336'
-    },
-    {
-      label: 'Produtos Sem Estoque',
-      value: dados.produtosSemEstoque,
-      icon: Package,
-      cor: '#607D8B'
-    },
-  ]
+  const alertas = dados.ingredientesAbaixoDoMinimo + dados.produtosSemEstoque
 
   return (
     <div className="dashboard">
-      <h1 className="dashboard-titulo">Dashboard</h1>
-      <p className="dashboard-subtitulo">Resumo do mês atual</p>
 
-      <div className="cards-grid">
-        {cards.map(({ label, value, icon: Icon, cor }) => (
-          <div key={label} className="card">
-            <div className="card-icon" style={{ background: cor + '20', color: cor }}>
-              <Icon size={22} />
-            </div>
-            <div className="card-info">
-              <span className="card-label">{label}</span>
-              <span className="card-value">{value}</span>
-            </div>
-          </div>
-        ))}
+      {/* Ilustração de fundo */}
+      <svg className="dashboard-bg" viewBox="0 0 300 300" fill="none">
+        <circle cx="80" cy="80" r="50" stroke="#2C1A0E" strokeWidth="2"/>
+        <circle cx="80" cy="80" r="35" stroke="#2C1A0E" strokeWidth="1.5"/>
+        <circle cx="80" cy="80" r="12" fill="#2C1A0E"/>
+        <path d="M55 80 Q65 60 80 65 Q95 70 105 80" stroke="#2C1A0E" strokeWidth="1.5" fill="none"/>
+        <rect x="160" y="40" width="80" height="60" rx="8" stroke="#2C1A0E" strokeWidth="2"/>
+        <path d="M160 60 h80" stroke="#2C1A0E" strokeWidth="1.5"/>
+        <circle cx="180" cy="50" r="4" fill="#2C1A0E"/>
+        <circle cx="200" cy="50" r="4" fill="#2C1A0E"/>
+        <path d="M170 75 h60 M170 85 h40" stroke="#2C1A0E" strokeWidth="1.5"/>
+        <path d="M60 170 Q80 140 100 160 Q120 180 140 150 Q160 120 180 145" stroke="#2C1A0E" strokeWidth="2" fill="none"/>
+        <circle cx="60" cy="170" r="5" fill="#2C1A0E"/>
+        <circle cx="100" cy="160" r="5" fill="#2C1A0E"/>
+        <circle cx="140" cy="150" r="5" fill="#2C1A0E"/>
+        <circle cx="180" cy="145" r="5" fill="#2C1A0E"/>
+        <ellipse cx="220" cy="200" rx="40" ry="20" stroke="#2C1A0E" strokeWidth="2"/>
+        <ellipse cx="220" cy="190" rx="30" ry="14" stroke="#2C1A0E" strokeWidth="1.5"/>
+        <path d="M195 195 Q220 175 245 195" stroke="#2C1A0E" strokeWidth="1.5" fill="none"/>
+        <circle cx="100" cy="240" r="30" stroke="#2C1A0E" strokeWidth="2"/>
+        <path d="M80 240 Q90 220 100 230 Q110 240 120 225 Q130 210 140 240" stroke="#2C1A0E" strokeWidth="1.5" fill="none"/>
+      </svg>
+
+      <div className="dashboard-header">
+        <div className="dashboard-mes">{mes}</div>
+        <h1 className="dashboard-titulo">Visão geral</h1>
       </div>
 
-      {dados.rankingProdutos?.length > 0 && (
-        <div className="grafico-section">
-          <h2 className="grafico-titulo">Produtos Mais Vendidos</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={dados.rankingProdutos}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="nome" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="totalVendido" fill="#e94560" name="Qtd Vendida" />
-            </BarChart>
-          </ResponsiveContainer>
+      {/* Hero */}
+      <div className="hero-card">
+        <div className="hero-principal">
+          <div className="hero-label">Faturamento do mês</div>
+          <div className="hero-valor">
+            R$ {dados.faturamentoBruto.toFixed(2).replace('.', ',')}
+          </div>
+          <div className="hero-lucro">
+            Lucro líquido: R$ {dados.lucroLiquido.toFixed(2).replace('.', ',')}
+          </div>
         </div>
-      )}
+        <div className="hero-divider" />
+        <div className="hero-stat">
+          <div className="hero-stat-val">{dados.totalVendas}</div>
+          <div className="hero-stat-label">Vendas</div>
+        </div>
+        <div className="hero-divider" />
+        <div className="hero-stat">
+          <div className="hero-stat-val">{dados.totalLotes}</div>
+          <div className="hero-stat-label">Lotes</div>
+        </div>
+      </div>
+
+      {/* Cards secundários */}
+      <div className="cards-grid">
+        <div className="card">
+          <div className="card-icone card-icone--laranja">
+            <DollarSign size={17} />
+          </div>
+          <div className="card-valor">
+            R$ {dados.totalCustoProducao.toFixed(2).replace('.', ',')}
+          </div>
+          <div className="card-label">Custo de produção</div>
+        </div>
+        <div className="card">
+          <div className="card-icone card-icone--verde">
+            <Package size={17} />
+          </div>
+          <div className="card-valor">—</div>
+          <div className="card-label">Doces em estoque</div>
+        </div>
+        <div className="card">
+          <div className="card-icone card-icone--verm">
+            <AlertTriangle size={17} />
+          </div>
+          <div className="card-valor">{alertas}</div>
+          <div className="card-label">Alertas ativos</div>
+        </div>
+      </div>
+
+      {/* Painel inferior */}
+      <div className="dashboard-bottom">
+        <div className="dash-panel">
+          <h2 className="dash-panel-titulo">Mais vendidos</h2>
+          {dados.rankingProdutos?.length === 0 ? (
+            <p style={{ color: '#A0856E', fontSize: '13px' }}>Nenhuma venda ainda.</p>
+          ) : (
+            dados.rankingProdutos?.map((p, i) => (
+              <div key={p.produtoId} className="ranking-item">
+                <div className="ranking-pos">{i + 1}</div>
+                <span className="ranking-nome">{p.nome}</span>
+                <span className="ranking-qtd">{p.totalVendido} vendidos</span>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="dash-panel">
+          <h2 className="dash-panel-titulo">Alertas de estoque</h2>
+          {alertas === 0 ? (
+            <div className="alerta-item alerta-item--ok">
+              Tudo em ordem — nenhum alerta no momento.
+            </div>
+          ) : (
+            <>
+              {dados.ingredientesAbaixoDoMinimo > 0 && (
+                <div className="alerta-item alerta-item--warn">
+                  {dados.ingredientesAbaixoDoMinimo} ingrediente(s) abaixo do mínimo
+                </div>
+              )}
+              {dados.produtosSemEstoque > 0 && (
+                <div className="alerta-item alerta-item--verm">
+                  {dados.produtosSemEstoque} produto(s) sem estoque
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
