@@ -4,7 +4,7 @@ import { getProdutos } from '../services/produtoService'
 import { getIngredientes } from '../services/ingredienteService'
 import { Plus, Trash2, ChefHat } from 'lucide-react'
 import './Ingredientes.css'
-import './Receitas.css'
+
 
 export default function Receitas() {
   const [receitas, setReceitas]       = useState([])
