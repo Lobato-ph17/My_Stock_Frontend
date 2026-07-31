@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getProdutos, criarProduto, atualizarProduto, deletarProduto } from '../services/produtoService'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import './Ingredientes.css'
+import Loading from '../components/Loading'
 
 const formVazio = { nome: '', descricao: '', precoVenda: '' }
 
@@ -62,7 +63,7 @@ export default function Produtos() {
     }
   }
 
-  if (loading) return <div className="page-loading">Carregando...</div>
+  if (loading) return <Loading />
   if (erro)    return <div className="page-erro">{erro}</div>
 
   return (

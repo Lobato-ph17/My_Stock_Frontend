@@ -3,6 +3,7 @@ import { getLotes, registrarLote } from '../services/loteService'
 import { getProdutos } from '../services/produtoService'
 import { Plus, Factory } from 'lucide-react'
 import './Ingredientes.css'
+import Loading from '../components/Loading'
 
 const formVazio = { produtoId: '', quantidade: '', observacao: '' }
 
@@ -42,7 +43,7 @@ export default function Producao() {
     }
   }
 
-  if (loading) return <div className="page-loading">Carregando...</div>
+  if (loading) return <Loading />
 
   return (
     <div className="page">

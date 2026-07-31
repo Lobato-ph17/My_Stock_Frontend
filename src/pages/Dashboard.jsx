@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { getDashboard } from '../services/dashboardService'
 import { DollarSign, Package, AlertTriangle } from 'lucide-react'
 import './Dashboard.css'
+import Loading from '../components/Loading'
 
 const mes = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(new Date())
 
@@ -19,7 +20,7 @@ export default function Dashboard() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="dashboard-loading">Carregando...</div>
+  if (loading) return <Loading />
   if (erro)    return <div className="dashboard-erro">{erro}</div>
 
   const alertas = dados.ingredientesAbaixoDoMinimo + dados.produtosSemEstoque

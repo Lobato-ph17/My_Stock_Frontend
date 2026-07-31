@@ -5,6 +5,7 @@ import {
 } from '../services/ingredienteService'
 import { Plus, Pencil, Trash2, ArrowUpDown } from 'lucide-react'
 import './Ingredientes.css'
+import Loading from '../components/Loading'
 
 const UNIDADES = ['GRAMA', 'MILILITRO', 'UNIDADE']
 
@@ -95,7 +96,7 @@ export default function Ingredientes() {
     }
   }
 
-  if (loading) return <div className="page-loading">Carregando...</div>
+  if (loading) return <Loading />
   if (erro)    return <div className="page-erro">{erro}</div>
 
   return (

@@ -4,6 +4,8 @@ import { getProdutos } from '../services/produtoService'
 import { getIngredientes } from '../services/ingredienteService'
 import { Plus, Trash2, ChefHat } from 'lucide-react'
 import './Ingredientes.css'
+import Loading from '../components/Loading'
+
 
 
 export default function Receitas() {
@@ -76,7 +78,7 @@ export default function Receitas() {
     }
   }
 
-  if (loading) return <div className="page-loading">Carregando...</div>
+  if (loading) return <Loading />
 
   return (
     <div className="page">

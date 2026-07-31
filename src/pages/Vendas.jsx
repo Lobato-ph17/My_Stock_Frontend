@@ -3,6 +3,8 @@ import { getVendas, registrarVenda } from '../services/vendaService'
 import { getProdutos } from '../services/produtoService'
 import { Plus } from 'lucide-react'
 import './Ingredientes.css'
+import Loading from '../components/Loading'
+
 
 const formVazio = { produtoId: '', quantidade: '', precoUnitario: '', observacao: '' }
 
@@ -53,7 +55,7 @@ export default function Vendas() {
     }
   }
 
-  if (loading) return <div className="page-loading">Carregando...</div>
+  if (loading) return <Loading />
 
   return (
     <div className="page">
