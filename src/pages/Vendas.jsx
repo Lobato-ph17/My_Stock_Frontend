@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react'
 import { getVendas, registrarVenda } from '../services/vendaService'
 import { getProdutos } from '../services/produtoService'
 import { Plus } from 'lucide-react'
-import './Ingredientes.css'
 import Loading from '../components/Loading'
-
+import './Ingredientes.css'
 
 const formVazio = { produtoId: '', quantidade: '', precoUnitario: '', observacao: '' }
 
@@ -29,14 +28,9 @@ export default function Vendas() {
 
   useEffect(() => { carregar() }, [])
 
-  // Quando selecionar produto, preenche preço automaticamente
   const selecionarProduto = (id) => {
     const produto = produtos.find(p => p.id === parseInt(id))
-    setForm({
-      ...form,
-      produtoId: id,
-      precoUnitario: produto ? produto.precoVenda : ''
-    })
+    setForm({ ...form, produtoId: id, precoUnitario: produto ? produto.precoVenda : '' })
   }
 
   const salvar = async () => {
@@ -55,6 +49,9 @@ export default function Vendas() {
     }
   }
 
+  const totalFaturado = vendas.reduce((acc, v) => acc + v.receitaBruta, 0)
+  const totalLucro = vendas.reduce((acc, v) => acc + v.lucroTotal, 0)
+
   if (loading) return <Loading />
 
   return (
@@ -62,7 +59,11 @@ export default function Vendas() {
       <div className="page-header">
         <div>
           <h1 className="page-titulo">Vendas</h1>
-          <p className="page-subtitulo">Registre suas vendas</p>
+          <p className="page-subtitulo">
+            Faturado: <strong style={{ color: '#3A7D52' }}>R$ {totalFaturado.toFixed(2).replace('.', ',')}</strong>
+            <span style={{ margin: '0 8px', color: '#EDE0D0' }}>|</span>
+            Lucro: <strong style={{ color: '#C8854A' }}>R$ {totalLucro.toFixed(2).replace('.', ',')}</strong>
+          </p>
         </div>
         <button className="btn-primario" onClick={() => { setForm(formVazio); setModalAberto(true) }}>
           <Plus size={16} /> Registrar Venda
@@ -74,30 +75,40 @@ export default function Vendas() {
           <thead>
             <tr>
               <th>Produto</th>
-              <th>Quantidade</th>
-              <th>Preço Unit.</th>
-              <th>Receita Bruta</th>
+              <th>Qtd</th>
+              <th>Preço unit.</th>
+              <th>Receita bruta</th>
               <th>Lucro</th>
               <th>Data</th>
               <th>Observação</th>
             </tr>
           </thead>
           <tbody>
-            {vendas.map(v => (
-              <tr key={v.id}>
-                <td>{v.produto.nome}</td>
-                <td>{v.quantidade} un</td>
-                <td>R$ {v.precoUnitario.toFixed(2)}</td>
-                <td>R$ {v.receitaBruta.toFixed(2)}</td>
-                <td>
-                  <span className={`badge ${v.lucroTotal > 0 ? 'badge-ok' : 'badge-alerta'}`}>
-                    R$ {v.lucroTotal.toFixed(2)}
-                  </span>
+            {vendas.length === 0 ? (
+              <tr>
+                <td colSpan={7} style={{ textAlign: 'center', color: '#A0856E', padding: '32px' }}>
+                  Nenhuma venda registrada ainda.
                 </td>
-                <td>{new Date(v.dataVenda).toLocaleDateString('pt-BR')}</td>
-                <td>{v.observacao || '—'}</td>
               </tr>
-            ))}
+            ) : (
+              vendas.map(v => (
+                <tr key={v.id}>
+                  <td style={{ fontWeight: 500 }}>{v.produto.nome}</td>
+                  <td>{v.quantidade} un</td>
+                  <td>R$ {v.precoUnitario.toFixed(2).replace('.', ',')}</td>
+                  <td style={{ color: '#3A7D52', fontWeight: 600 }}>
+                    R$ {v.receitaBruta.toFixed(2).replace('.', ',')}
+                  </td>
+                  <td>
+                    <span className={`badge ${v.lucroTotal > 0 ? 'badge-ok' : 'badge-alerta'}`}>
+                      R$ {v.lucroTotal.toFixed(2).replace('.', ',')}
+                    </span>
+                  </td>
+                  <td>{new Date(v.dataVenda).toLocaleDateString('pt-BR')}</td>
+                  <td>{v.observacao || '—'}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -121,20 +132,20 @@ export default function Vendas() {
               <input
                 type="number"
                 value={form.quantidade}
-                onChange={e => setForm({...form, quantidade: e.target.value})}
+                onChange={e => setForm({ ...form, quantidade: e.target.value })}
               />
 
-              <label>Preço Unitário (R$)</label>
+              <label>Preço unitário (R$)</label>
               <input
                 type="number"
                 value={form.precoUnitario}
-                onChange={e => setForm({...form, precoUnitario: e.target.value})}
+                onChange={e => setForm({ ...form, precoUnitario: e.target.value })}
               />
 
               <label>Observação (opcional)</label>
               <input
                 value={form.observacao}
-                onChange={e => setForm({...form, observacao: e.target.value})}
+                onChange={e => setForm({ ...form, observacao: e.target.value })}
               />
             </div>
             <div className="modal-acoes">

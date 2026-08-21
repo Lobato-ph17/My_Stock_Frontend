@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react'
 import { getLotes, registrarLote } from '../services/loteService'
 import { getProdutos } from '../services/produtoService'
 import { Plus, Factory } from 'lucide-react'
-import './Ingredientes.css'
 import Loading from '../components/Loading'
+import './Ingredientes.css'
 
 const formVazio = { produtoId: '', quantidade: '', observacao: '' }
 
 export default function Producao() {
-  const [lotes, setLotes]           = useState([])
-  const [produtos, setProdutos]     = useState([])
-  const [loading, setLoading]       = useState(true)
+  const [lotes, setLotes]             = useState([])
+  const [produtos, setProdutos]       = useState([])
+  const [loading, setLoading]         = useState(true)
   const [modalAberto, setModalAberto] = useState(false)
-  const [form, setForm]             = useState(formVazio)
+  const [form, setForm]               = useState(formVazio)
 
   const carregar = async () => {
     try {
@@ -69,15 +69,25 @@ export default function Producao() {
             </tr>
           </thead>
           <tbody>
-            {lotes.map(l => (
-              <tr key={l.id}>
-                <td>{l.produto.nome}</td>
-                <td>{l.quantidade} un</td>
-                <td>R$ {l.custoTotalLote.toFixed(2)}</td>
-                <td>{new Date(l.dataProducao).toLocaleDateString('pt-BR')}</td>
-                <td>{l.observacao || '—'}</td>
+            {lotes.length === 0 ? (
+              <tr>
+                <td colSpan={5} style={{ textAlign: 'center', color: '#A0856E', padding: '32px' }}>
+                  Nenhum lote registrado ainda.
+                </td>
               </tr>
-            ))}
+            ) : (
+              lotes.map(l => (
+                <tr key={l.id}>
+                  <td style={{ fontWeight: 500 }}>{l.produto.nome}</td>
+                  <td>{l.quantidade} un</td>
+                  <td style={{ color: '#C8854A', fontWeight: 600 }}>
+                    R$ {l.custoTotalLote.toFixed(2).replace('.', ',')}
+                  </td>
+                  <td>{new Date(l.dataProducao).toLocaleDateString('pt-BR')}</td>
+                  <td>{l.observacao || '—'}</td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
@@ -88,7 +98,7 @@ export default function Producao() {
             <h2 className="modal-titulo">Registrar Lote de Produção</h2>
             <div className="modal-form">
               <label>Produto</label>
-              <select value={form.produtoId} onChange={e => setForm({...form, produtoId: e.target.value})}>
+              <select value={form.produtoId} onChange={e => setForm({ ...form, produtoId: e.target.value })}>
                 <option value="">Selecione um produto</option>
                 {produtos.map(p => (
                   <option key={p.id} value={p.id}>
@@ -101,13 +111,13 @@ export default function Producao() {
               <input
                 type="number"
                 value={form.quantidade}
-                onChange={e => setForm({...form, quantidade: e.target.value})}
+                onChange={e => setForm({ ...form, quantidade: e.target.value })}
               />
 
               <label>Observação (opcional)</label>
               <input
                 value={form.observacao}
-                onChange={e => setForm({...form, observacao: e.target.value})}
+                onChange={e => setForm({ ...form, observacao: e.target.value })}
               />
             </div>
             <div className="modal-acoes">
