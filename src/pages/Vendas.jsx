@@ -3,6 +3,7 @@ import { getVendas, registrarVenda } from '../services/vendaService'
 import { getProdutos } from '../services/produtoService'
 import { Plus } from 'lucide-react'
 import Loading from '../components/Loading'
+import EstadoVazio from '../components/EstadoVazio'
 import './Ingredientes.css'
 
 const formVazio = { produtoId: '', quantidade: '', precoUnitario: '', observacao: '' }
@@ -50,7 +51,7 @@ export default function Vendas() {
   }
 
   const totalFaturado = vendas.reduce((acc, v) => acc + v.receitaBruta, 0)
-  const totalLucro = vendas.reduce((acc, v) => acc + v.lucroTotal, 0)
+  const totalLucro    = vendas.reduce((acc, v) => acc + v.lucroTotal, 0)
 
   if (loading) return <Loading />
 
@@ -86,29 +87,31 @@ export default function Vendas() {
           <tbody>
             {vendas.length === 0 ? (
               <tr>
-                <td colSpan={7} style={{ textAlign: 'center', color: '#A0856E', padding: '32px' }}>
-                  Nenhuma venda registrada ainda.
+                <td colSpan={7}>
+                  <EstadoVazio
+                    tipo="vendas"
+                    onAcao={() => { setForm(formVazio); setModalAberto(true) }}
+                    labelAcao="+ Registrar Venda"
+                  />
                 </td>
               </tr>
-            ) : (
-              vendas.map(v => (
-                <tr key={v.id}>
-                  <td style={{ fontWeight: 500 }}>{v.produto.nome}</td>
-                  <td>{v.quantidade} un</td>
-                  <td>R$ {v.precoUnitario.toFixed(2).replace('.', ',')}</td>
-                  <td style={{ color: '#3A7D52', fontWeight: 600 }}>
-                    R$ {v.receitaBruta.toFixed(2).replace('.', ',')}
-                  </td>
-                  <td>
-                    <span className={`badge ${v.lucroTotal > 0 ? 'badge-ok' : 'badge-alerta'}`}>
-                      R$ {v.lucroTotal.toFixed(2).replace('.', ',')}
-                    </span>
-                  </td>
-                  <td>{new Date(v.dataVenda).toLocaleDateString('pt-BR')}</td>
-                  <td>{v.observacao || '—'}</td>
-                </tr>
-              ))
-            )}
+            ) : vendas.map(v => (
+              <tr key={v.id}>
+                <td style={{ fontWeight: 500 }}>{v.produto.nome}</td>
+                <td>{v.quantidade} un</td>
+                <td>R$ {v.precoUnitario.toFixed(2).replace('.', ',')}</td>
+                <td style={{ color: '#3A7D52', fontWeight: 600 }}>
+                  R$ {v.receitaBruta.toFixed(2).replace('.', ',')}
+                </td>
+                <td>
+                  <span className={`badge ${v.lucroTotal > 0 ? 'badge-ok' : 'badge-alerta'}`}>
+                    R$ {v.lucroTotal.toFixed(2).replace('.', ',')}
+                  </span>
+                </td>
+                <td>{new Date(v.dataVenda).toLocaleDateString('pt-BR')}</td>
+                <td>{v.observacao || '—'}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -127,21 +130,18 @@ export default function Vendas() {
                   </option>
                 ))}
               </select>
-
               <label>Quantidade</label>
               <input
                 type="number"
                 value={form.quantidade}
                 onChange={e => setForm({ ...form, quantidade: e.target.value })}
               />
-
               <label>Preço unitário (R$)</label>
               <input
                 type="number"
                 value={form.precoUnitario}
                 onChange={e => setForm({ ...form, precoUnitario: e.target.value })}
               />
-
               <label>Observação (opcional)</label>
               <input
                 value={form.observacao}

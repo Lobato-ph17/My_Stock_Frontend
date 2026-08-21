@@ -6,6 +6,7 @@ import {
 import { Plus, Pencil, Trash2, ArrowUpDown } from 'lucide-react'
 import './Ingredientes.css'
 import Loading from '../components/Loading'
+import EstadoVazio from '../components/EstadoVazio'
 
 const UNIDADES = ['GRAMA', 'MILILITRO', 'UNIDADE']
 
@@ -125,7 +126,17 @@ export default function Ingredientes() {
             </tr>
           </thead>
           <tbody>
-            {ingredientes.map(ing => {
+            {ingredientes.length === 0 ? (
+            <tr>
+              <td colSpan={7}>
+                <EstadoVazio
+                  tipo="ingredientes"
+                  onAcao={abrirCriar}
+                  labelAcao="+ Novo Ingrediente"
+                />
+              </td>
+            </tr>
+            ) : ingredientes.map(ing => {
               const abaixo = ing.quantidade < ing.estoqueMinimo
               return (
                 <tr key={ing.id}>

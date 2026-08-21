@@ -1,0 +1,50 @@
+.estado-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px;
+  text-align: center;
+}
+
+.estado-vazio-emoji {
+  font-size: 52px;
+  margin-bottom: 16px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0);    }
+  50%       { transform: translateY(-8px); }
+}
+
+.estado-vazio-titulo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  color: #2C1A0E;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.estado-vazio-descricao {
+  font-size: 0.875rem;
+  color: #A0856E;
+  max-width: 320px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.estado-vazio-btn {
+  background: #C8854A;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.15s;
+}
+
+.estado-vazio-btn:hover { background: #a86d3a; }

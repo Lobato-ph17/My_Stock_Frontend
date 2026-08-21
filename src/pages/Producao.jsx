@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { getLotes, registrarLote } from '../services/loteService'
 import { getProdutos } from '../services/produtoService'
-import { Plus, Factory } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import Loading from '../components/Loading'
+import EstadoVazio from '../components/EstadoVazio'
 import './Ingredientes.css'
 
 const formVazio = { produtoId: '', quantidade: '', observacao: '' }
@@ -71,23 +72,25 @@ export default function Producao() {
           <tbody>
             {lotes.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ textAlign: 'center', color: '#A0856E', padding: '32px' }}>
-                  Nenhum lote registrado ainda.
+                <td colSpan={5}>
+                  <EstadoVazio
+                    tipo="producao"
+                    onAcao={() => { setForm(formVazio); setModalAberto(true) }}
+                    labelAcao="+ Registrar Lote"
+                  />
                 </td>
               </tr>
-            ) : (
-              lotes.map(l => (
-                <tr key={l.id}>
-                  <td style={{ fontWeight: 500 }}>{l.produto.nome}</td>
-                  <td>{l.quantidade} un</td>
-                  <td style={{ color: '#C8854A', fontWeight: 600 }}>
-                    R$ {l.custoTotalLote.toFixed(2).replace('.', ',')}
-                  </td>
-                  <td>{new Date(l.dataProducao).toLocaleDateString('pt-BR')}</td>
-                  <td>{l.observacao || '—'}</td>
-                </tr>
-              ))
-            )}
+            ) : lotes.map(l => (
+              <tr key={l.id}>
+                <td style={{ fontWeight: 500 }}>{l.produto.nome}</td>
+                <td>{l.quantidade} un</td>
+                <td style={{ color: '#C8854A', fontWeight: 600 }}>
+                  R$ {l.custoTotalLote.toFixed(2).replace('.', ',')}
+                </td>
+                <td>{new Date(l.dataProducao).toLocaleDateString('pt-BR')}</td>
+                <td>{l.observacao || '—'}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -106,14 +109,12 @@ export default function Producao() {
                   </option>
                 ))}
               </select>
-
               <label>Quantidade a produzir</label>
               <input
                 type="number"
                 value={form.quantidade}
                 onChange={e => setForm({ ...form, quantidade: e.target.value })}
               />
-
               <label>Observação (opcional)</label>
               <input
                 value={form.observacao}

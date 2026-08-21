@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getDespesas, criarDespesa, atualizarDespesa, deletarDespesa } from '../services/despesaService'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import Loading from '../components/Loading'
+import EstadoVazio from '../components/EstadoVazio'
 import './Ingredientes.css'
 
 const CATEGORIAS = ['EMBALAGEM', 'GAS', 'ENERGIA', 'TRANSPORTE', 'INGREDIENTE_AVULSO', 'OUTRO']
@@ -16,12 +17,12 @@ const CATEGORIA_LABEL = {
 }
 
 const CATEGORIA_COR = {
-  EMBALAGEM:         { bg: '#EDE0D0', color: '#5C3D25' },
-  GAS:               { bg: '#FDE8E8', color: '#C0392B' },
-  ENERGIA:           { bg: '#FDF0E3', color: '#C8854A' },
-  TRANSPORTE:        { bg: '#E8F5EC', color: '#3A7D52' },
-  INGREDIENTE_AVULSO:{ bg: '#EAF0FD', color: '#2C5FA8' },
-  OUTRO:             { bg: '#F5EFE4', color: '#A0856E' },
+  EMBALAGEM:          { bg: '#EDE0D0', color: '#5C3D25' },
+  GAS:                { bg: '#FDE8E8', color: '#C0392B' },
+  ENERGIA:            { bg: '#FDF0E3', color: '#C8854A' },
+  TRANSPORTE:         { bg: '#E8F5EC', color: '#3A7D52' },
+  INGREDIENTE_AVULSO: { bg: '#EAF0FD', color: '#2C5FA8' },
+  OUTRO:              { bg: '#F5EFE4', color: '#A0856E' },
 }
 
 const formVazio = { descricao: '', valor: '', categoria: 'EMBALAGEM', observacao: '' }
@@ -122,38 +123,40 @@ export default function Despesas() {
           <tbody>
             {despesas.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ textAlign: 'center', color: '#A0856E', padding: '32px' }}>
-                  Nenhuma despesa registrada ainda.
+                <td colSpan={6}>
+                  <EstadoVazio
+                    tipo="despesas"
+                    onAcao={abrirCriar}
+                    labelAcao="+ Nova Despesa"
+                  />
                 </td>
               </tr>
-            ) : (
-              despesas.map(d => {
-                const cor = CATEGORIA_COR[d.categoria] || CATEGORIA_COR.OUTRO
-                return (
-                  <tr key={d.id}>
-                    <td style={{ fontWeight: 500 }}>{d.descricao}</td>
-                    <td>
-                      <span className="badge" style={{ background: cor.bg, color: cor.color }}>
-                        {CATEGORIA_LABEL[d.categoria] || d.categoria}
-                      </span>
-                    </td>
-                    <td style={{ color: '#C0392B', fontWeight: 600 }}>
-                      R$ {d.valor.toFixed(2).replace('.', ',')}
-                    </td>
-                    <td>{new Date(d.data).toLocaleDateString('pt-BR')}</td>
-                    <td>{d.observacao || '—'}</td>
-                    <td className="acoes">
-                      <button className="btn-icone" onClick={() => abrirEditar(d)} title="Editar">
-                        <Pencil size={15} />
-                      </button>
-                      <button className="btn-icone btn-icone--danger" onClick={() => deletar(d.id)} title="Deletar">
-                        <Trash2 size={15} />
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })
-            )}
+            ) : despesas.map(d => {
+              const cor = CATEGORIA_COR[d.categoria] || CATEGORIA_COR.OUTRO
+              return (
+                <tr key={d.id}>
+                  <td style={{ fontWeight: 500 }}>{d.descricao}</td>
+                  <td>
+                    <span className="badge" style={{ background: cor.bg, color: cor.color }}>
+                      {CATEGORIA_LABEL[d.categoria] || d.categoria}
+                    </span>
+                  </td>
+                  <td style={{ color: '#C0392B', fontWeight: 600 }}>
+                    R$ {d.valor.toFixed(2).replace('.', ',')}
+                  </td>
+                  <td>{new Date(d.data).toLocaleDateString('pt-BR')}</td>
+                  <td>{d.observacao || '—'}</td>
+                  <td className="acoes">
+                    <button className="btn-icone" onClick={() => abrirEditar(d)} title="Editar">
+                      <Pencil size={15} />
+                    </button>
+                    <button className="btn-icone btn-icone--danger" onClick={() => deletar(d.id)} title="Deletar">
+                      <Trash2 size={15} />
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
       </div>
@@ -171,7 +174,6 @@ export default function Despesas() {
                 onChange={e => setForm({ ...form, descricao: e.target.value })}
                 placeholder="Ex: Compra de embalagens"
               />
-
               <label>Categoria</label>
               <select
                 value={form.categoria}
@@ -181,7 +183,6 @@ export default function Despesas() {
                   <option key={c} value={c}>{CATEGORIA_LABEL[c]}</option>
                 ))}
               </select>
-
               <label>Valor (R$)</label>
               <input
                 type="number"
@@ -189,7 +190,6 @@ export default function Despesas() {
                 onChange={e => setForm({ ...form, valor: e.target.value })}
                 placeholder="0,00"
               />
-
               <label>Observação (opcional)</label>
               <input
                 value={form.observacao}
